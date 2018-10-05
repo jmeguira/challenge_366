@@ -6,6 +6,6 @@ challenge_366.py - source for challenge solution
 README.md - this file
 
 run instructions:
-python challenge_366.py <word>
+python challenge_366.py word
 
 where word is the word that you would like to tunnel
