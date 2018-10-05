@@ -40,6 +40,21 @@ def wfunnel(words, length):
 
 def main():
     print('script : ' + sys.argv[0])
+
+    if sys.argv[1] == 'bonus1':
+        start = timeit.timeit()
+        for x in content.split('\n'):
+            word = [[x]]
+            words,length = wfunnel(word, 0)
+            if length == 10:
+                for x in words:
+                    print(x)
+                print('length is: ' + str(length))
+                end = timeit.timeit()
+                time = end - start
+                print('that took: ' + str(time) +  ' seconds' )
+                return
+
     if sys.argv[1]:
         start = timeit.timeit()
         word = [[str(sys.argv[1])]]
