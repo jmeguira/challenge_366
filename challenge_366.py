@@ -1,6 +1,7 @@
 import requests
 import sys
 import hashlib
+import timeit
 
 url = 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
 r = requests.get(url)
@@ -12,33 +13,43 @@ for x in content.split('\n'):
 def get_words(word):
 
     out = []
-    for i in range(len(word)-1):
+    for i in range(len(word)):
         try:
             temp = word[:i] + word[i+1:]
             #https://stackoverflow.com/a/3559592
-            temphash = hashlib.blake2b(temp).digest()
+            temphash = hashlib.blake2b(temp.encode('utf-8')).digest()
             out.append(ht[temphash])
         except KeyError:
             continue
     return out
 
-def wfunnel(word):
+def wfunnel(words, length):
 
-    temphash = hashlib.blake2b(word).digest()
-    try:
-        print(str(ht[temphash]) + ' is a valid starting word')
-    except KeyError:
-        print(sys.argv[1] +  ' is not a valid starting word')
-        return
+    if len(words[-1]) == 0:
+        words = words[:-1]
+        return words, length
+    out = []
+    for x in words[-1]:
+        tmp = get_words(x)
+        for y in tmp:
+            out.append(y)
+    words.append(out)
+    length += 1
+    return wfunnel(words, length)
 
-    quit = False
-    test = get_words(word)
-    print(len(test))
 
 def main():
-    print('script : ' + sys.argv[0] )
+    print('script : ' + sys.argv[0])
     if sys.argv[1]:
-        wfunnel(sys.argv[1].encode('utf-8'))
+        start = timeit.timeit()
+        word = [[str(sys.argv[1])]]
+        words,length = wfunnel(word, 0)
+        for x in words:
+            print(x)
+        print('length is : ' + str(length))
+        end = timeit.timeit()
+        time = end - start
+        print('that took: ' + str(time) + ' seconds' )
 
 if __name__ == '__main__':
     main()
